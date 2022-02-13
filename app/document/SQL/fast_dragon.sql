@@ -1,0 +1,4 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE DATABASE fast_dragon CHARACTER SET utf8 COLLATE utf8_general_ci;
