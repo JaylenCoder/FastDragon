@@ -47,7 +47,21 @@ class Generator(object):
         service_template = SERVICE_FILE.format(create_time=create_time, service_file=service_file)
         self.py_file_creator(service_py, service_template)
 
+    def peewee_model(self):
+        model_path = Path(base_dir) / "app" / "models" / "peewee"
+        print(model_path)
+        DB_FILE = f"{model_path}/{DATABASE}.py"
+        # DIALECT = config["DIALECT"]
+        # USERNAME = config["USERNAME"]
+        # PASSWORD = config["PASSWORD"]
+        # HOST = config["HOST"]
+        # PORT = config["PORT"]
+        # COMMAND = "python -m pwiz -e "
+        # PEEWEE_DATABASE_UR = f"{COMMAND}{DIALECT} -H {HOST} -p {PORT} -u {USERNAME} -P {PASSWORD} {DATABASE} > {DB_FILE}"
+        # print(PEEWEE_DATABASE_UR)
+        # temp_stream = os.popen(PEEWEE_DATABASE_UR)._stream  # 执行命令
+
 
 if __name__ == '__main__':
     name = "test"
-    Generator().core(name)
+    Generator().peewee_model()

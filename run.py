@@ -3,7 +3,7 @@
 # @File    : run.py
 # @Software: PyCharm
 import uvicorn
-from app.main import system
+from app.main import system, logger
 from app.main.factory import Application
 
 """ FastAPI Web服务启动
@@ -20,6 +20,13 @@ app = Application(environment).init()  # 初始化应用
 
 def management():
     """运行管理器 Run Management Utility."""
+    logger.info(
+        " ###### FastAPI Web Service *** FastDragon v1.0.0 ######\n"
+        " |.--./-.--/-/..../---/-.| \n"
+        " =========================== \n"
+        " # Application >>> Startup #\n"
+        " =========================== \n"
+    )
     if system != 'Windows':  # 本地开发环境
         import asyncio
         loop = asyncio.get_event_loop()

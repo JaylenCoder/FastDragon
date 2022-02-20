@@ -96,13 +96,6 @@ class Application(object):
 
         @app.on_event('startup')
         async def startup():  # 应用启动
-            logger.info(
-                " ###### FastAPI Web Service *** FastDragon v1.0.0 ######\n"
-                " |.--./-.--/-/..../---/-.| \n"
-                " =========================== \n"
-                " # Application >>> Startup #\n"
-                " =========================== \n"
-            )
             await self.app_database()  # 数据库初始化-异步操作
 
         @app.on_event('shutdown')
