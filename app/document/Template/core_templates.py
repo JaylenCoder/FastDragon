@@ -9,9 +9,9 @@ INIT_FILE = """# -*- coding: utf-8 -*-
 # @File    : __init__.py
 # @Software: PyCharm
 # Life was like a box of chocolates, you never know what you’re gonna get.
-from fastapi import APIRouter
+from fastapi_utils.inferring_router import InferringRouter
 
-router = APIRouter()
+router = InferringRouter()  # Step 1: Create a router
 """
 
 VIEW_FILE = """# -*- coding: utf-8 -*-
@@ -19,14 +19,32 @@ VIEW_FILE = """# -*- coding: utf-8 -*-
 # @File    : {view_file}.py
 # @Software: PyCharm
 # Life was like a box of chocolates, you never know what you’re gonna get.
-from starlette import status
-from app.core.{view_name} import router
+from fastapi_utils.cbv import cbv
 from app.main.response import Msg
+from app.core.{view_name} import router
 
 
-@router.get("/{view_name}", status_code=status.HTTP_200_OK)
-async def {view_name}():
-    return Msg(code=status.HTTP_200_OK, message="访问{view_name} API 成功").body()
+@cbv(router)  # Step 2: Create and decorate a class to hold the endpoints
+class {class_name}:
+    # Step 3: Add dependencies as class attributes
+    # ...
+    
+    @router.post("/{view_name}")
+    async def create_item(self):
+        # Step 4: Write the business logic
+        return Msg(code=200000, message="Successfully").body()
+
+    @router.get("/{view_name}")
+    def query_item(self):
+        return Msg(code=200000, message="Successfully").body()
+    
+    @router.put("/{view_name}")
+    def update_item(self):
+        return Msg(code=200000, message="Successfully").body()
+
+    @router.delete("/{view_name}")
+    def delete_item(self):
+        return Msg(code=200000, message="Successfully").body()
 """
 
 SCHEMA_FILE = """# -*- coding: utf-8 -*-

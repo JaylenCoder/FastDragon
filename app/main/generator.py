@@ -4,10 +4,13 @@
 # @File    : command.py
 # @Software: PyCharm
 # Life was like a box of chocolates, you never know what you’re gonna get.
+import os
+import subprocess
 import traceback
 from pathlib import Path
 from app.document.Template.core_templates import INIT_FILE, VIEW_FILE, SCHEMA_FILE, SERVICE_FILE
-from app.main import base_dir, now, logger
+from app.main import base_dir, now, logger, system
+from app.main.settings.Development import DevConfig
 
 
 class Generator(object):
@@ -36,7 +39,8 @@ class Generator(object):
         self.py_file_creator(init_py, init_template)
         # 创建 view 文件
         view_py, view_file = file_dir / f"{file_name}_view.py", f"{file_name}_view"
-        view_template = VIEW_FILE.format(create_time=create_time, view_file=view_file, view_name=file_name)
+        view_template = VIEW_FILE.format(create_time=create_time, view_file=view_file,
+                                         class_name=f"{file_name}".title(), view_name=file_name)
         self.py_file_creator(view_py, view_template)
         # 创建 schema 文件
         schema_py, schema_file = file_dir / f"{file_name}_schema.py", f"{file_name}_schema"
@@ -47,21 +51,22 @@ class Generator(object):
         service_template = SERVICE_FILE.format(create_time=create_time, service_file=service_file)
         self.py_file_creator(service_py, service_template)
 
-    def peewee_model(self):
+    def peewee_model(self, environment):
         model_path = Path(base_dir) / "app" / "models" / "peewee"
-        print(model_path)
-        DB_FILE = f"{model_path}/{DATABASE}.py"
-        # DIALECT = config["DIALECT"]
-        # USERNAME = config["USERNAME"]
-        # PASSWORD = config["PASSWORD"]
-        # HOST = config["HOST"]
-        # PORT = config["PORT"]
-        # COMMAND = "python -m pwiz -e "
-        # PEEWEE_DATABASE_UR = f"{COMMAND}{DIALECT} -H {HOST} -p {PORT} -u {USERNAME} -P {PASSWORD} {DATABASE} > {DB_FILE}"
-        # print(PEEWEE_DATABASE_UR)
-        # temp_stream = os.popen(PEEWEE_DATABASE_UR)._stream  # 执行命令
+        has_files = model_path.exists()  # 判断目录是否存在
+        if has_files is False:
+            model_path.mkdir(parents=True, exist_ok=True)  # 创建目录
+        env = "default" if system == "Windows" else environment  # 环境配置
+        config = {"default": DevConfig, "dev": DevConfig}[env]
+        db = config.DB_NAME
+        db_file = f"{model_path}/{db}.py"
+        user, password = config.USER, config.PASSWORD
+        host, port = config.SERVER, config.PORT
+        command = "python -m pwiz -e "
+        peewee_models = f'{command}mysql -H {host} -p {port} -u {user} -P {password} {db} > {db_file}'
+        logger.debug(f"{peewee_models}")
 
 
 if __name__ == '__main__':
     name = "test"
-    Generator().peewee_model()
+    Generator().peewee_model("dev")

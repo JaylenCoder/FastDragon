@@ -12,17 +12,17 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from tortoise import Tortoise, run_async
-# from starlette.middleware.authentication import AuthenticationMiddleware
+from tortoise import Tortoise
 from starlette.middleware.sessions import SessionMiddleware
-from app.main import logger, system, time, routers
+from app.main import logger, platform_system, time, routers
 from app.main.response import Msg
 from app.main.settings.Development import DevConfig
 
 
 class Application(object):
+
     def __init__(self, environment):
-        env = "default" if system == "Windows" else environment  # 环境配置
+        env = "default" if platform_system == "Windows" else environment  # 环境配置
         self.config = {
             "default": DevConfig,
             "dev": DevConfig
@@ -44,10 +44,12 @@ class Application(object):
         https://tortoise-orm.readthedocs.io/en/latest/
         :return:
         """
+        # 初始化 Tortoise ORM
         await Tortoise.init(self.config.TORTOISE_ORM)
         filterwarnings("ignore", category=aiomysql.Warning)  # 关闭告警
         # Generate the schema
         await Tortoise.generate_schemas()
+        # 初始化 Peewee-async
 
     def app_logger(self):  # 应用日志
         """
@@ -88,6 +90,7 @@ class Application(object):
         # app.add_middleware(AuthenticationMiddleware, backend=BasicAuth())
 
     def init(self):
+        # 1. Create the app object
         app = FastAPI(
             title='FastDragon Web Service',
             description='闪龙 Web服务',

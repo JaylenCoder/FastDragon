@@ -13,7 +13,7 @@ from app.main.generator import Generator
 @click.option('--name', prompt='模块名', help='输入模块名，生成业务层模块')
 def core_creator(name):
     """ 业务模块生成器 """
-    click.echo(f'Create {name} template files')
+    click.echo(f'Create {name} Template files Successfully.')
     Generator().core(name)
 
 

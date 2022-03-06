@@ -9,7 +9,7 @@ Service settings for project.
 import os
 from pathlib import Path
 from pydantic import BaseSettings
-from app.main import system
+from app.main import platform_system
 from typing import NamedTuple
 from enum import EnumMeta, Enum, unique
 from types import DynamicClassAttribute
@@ -42,7 +42,7 @@ class Config(BaseSettings):
     DEBUG_FORMAT = '{time:YYYY-MM-DD HH:mm:ss} [{level}] {process} {file}|{name}.{function}:{line} >>> {message}'
     WIN_LOGS = os.path.join(Path().resolve(), "logs")
     LINUX_LOGS = f'/home/www/logs'
-    LOG_FILE = WIN_LOGS if system == "Windows" else LINUX_LOGS
+    LOG_FILE = WIN_LOGS if platform_system == "Windows" else LINUX_LOGS
     LOG_PATH = os.path.join(LOG_FILE, '{time:%Y-%m-%d}.log')
     LOG_ERROR_PATH = os.path.join(LOG_FILE, '{time:%Y-%m-%d}-error.log')
     # 日志打包
